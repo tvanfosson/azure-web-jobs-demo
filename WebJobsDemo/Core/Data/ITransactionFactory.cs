@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace WebApp.Data
+namespace WebJobDemo.Core.Data
 {
     public interface ITransactionFactory
     {

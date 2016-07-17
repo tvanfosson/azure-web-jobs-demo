@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Subscribed";
+}
+@model SubscriptionViewModel
+
+@if (Model.Id != Guid.Empty)
+{
+    <h1>Subscription Details</h1>
+
+    <ul class="list-group">
+        <li class="list-group-item">Name: @Model.FirstName @Model.LastName</li>
+        <li class="list-group-item">Subscription Key: @Model.SubscriptionKey</li>
+        <li class="list-group-item">Created On: @Model.CreatedOn</li>
+        <li class="list-group-item">Confirmation Sent On: @Model.ConfirmationSentOn</li>
+        <li class="list-group-item">Confirmed: @(Model.Confirmed ? "Yes" : "No")</li>
+    </ul>
+
+    using (Html.BeginForm())
+    {
+        @Html.HiddenFor(m => m.EmailAddress)
+        @Html.HiddenFor(m => m.SubscriptionKey)
+
+        <div class="form-group">
+            <div>
+                <button type="submit" class="btn btn-default">Refresh</button>
+            </div>
+        </div>
+    }
+}
+
+<h1>Search</h1>
+
+@if (Model.PerformedLookup)
+{
+    <p>No subscription found!</p>
+}
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.EmailAddress, new { @class = "control-label" })
+        <div>
+            @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Email Address" })
+            @Html.ValidationMessageFor(m => m.EmailAddress)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.SubscriptionKey, new { @class = "control-label" })
+        <div>
+            @Html.TextBoxFor(m => m.SubscriptionKey, new { @class = "form-control", placeholder = "Subscription Key", value = Model.SubscriptionKey == Guid.Empty ? "" : Model.SubscriptionKey.ToString() })
+            @Html.ValidationMessageFor(m => m.SubscriptionKey)
+        </div>
+    </div>
+    <div class="form-group">
+        <div>
+            <button type="submit" class="btn btn-default">Look Up</button>
+        </div>
+    </div>
+}

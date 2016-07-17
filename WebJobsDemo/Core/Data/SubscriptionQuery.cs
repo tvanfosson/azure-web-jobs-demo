@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using WebApp.Configuration;
-using WebApp.Data.Models;
+using WebJobDemo.Core.Configuration;
+using WebJobDemo.Core.Data.Models;
 
-namespace WebApp.Data
+namespace WebJobDemo.Core.Data
 {
     public class SubscriptionQuery : DapperBase, ISubscriptionQuery
     {
-        private const string SelectSql = "SELECT * FROM Subscriptions";
+        private const string SelectSubscriptionsSql = "SELECT * FROM Subscriptions";
+        private const string SelectStatisticsSql = "SELECT * FROM DomainStatistics";
 
         public SubscriptionQuery(IApplicationSettings settings, IConnectionFactory connectionFactory)
             : base(settings, connectionFactory)
@@ -19,14 +20,14 @@ namespace WebApp.Data
 
         private string GetSql(SqlBuilder builder)
         {
-            return builder.AddTemplate(SelectSql + "/**where**/").RawSql;
+            return builder.AddTemplate(SelectSubscriptionsSql + " /**where**/").RawSql;
         }
 
         public async Task<ICollection<Subscription>> GetSubscriptions()
         {
             using (var connection = CreateConnection())
             {
-                var subscriptions = await connection.QueryAsync<Subscription>(SelectSql);
+                var subscriptions = await connection.QueryAsync<Subscription>(SelectSubscriptionsSql);
 
                 return subscriptions.ToList();
             }
@@ -34,13 +35,13 @@ namespace WebApp.Data
 
         public async Task<Subscription> GetSubscriptionById(Guid id)
         {
-            var builder = new SqlBuilder().Where("Id = {id}", new { id });
+            var builder = new SqlBuilder().Where("Id = @id");
 
             var sql = GetSql(builder);
 
             using (var connection = CreateConnection())
             {
-                var subscription = await connection.QueryAsync<Subscription>(sql);
+                var subscription = await connection.QueryAsync<Subscription>(sql, new { id });
 
                 return subscription.FirstOrDefault();
             }
@@ -48,18 +49,28 @@ namespace WebApp.Data
 
         public async Task<Subscription> GetSubscriptionByEmailAddressAndSubscriptionKey(string emailAddress, Guid subscriptionKey)
         {
-            var builder = new SqlBuilder().Where("EmailAddress = {emailAddress}", new { emailAddress })
-                                          .Where("SubscriptionKey = {subscriptionKey}", subscriptionKey);
+            var builder = new SqlBuilder().Where("EmailAddress = @emailAddress")
+                                          .Where("SubscriptionKey = @subscriptionKey");
 
             var sql = GetSql(builder);
 
             using (var connection = CreateConnection())
             {
-                var result = await connection.QueryAsync<Subscription>(sql);
+                var result = await connection.QueryAsync<Subscription>(sql, new { emailAddress, subscriptionKey });
 
                 var subscription = result.FirstOrDefault();
 
                 return subscription;
+            }
+        }
+
+        public async Task<ICollection<DomainStatistic>> GetStatistics()
+        {
+            using (var connection = CreateConnection())
+            {
+                var stats = await connection.QueryAsync<DomainStatistic>(SelectStatisticsSql);
+
+                return stats.ToList();
             }
         }
     }

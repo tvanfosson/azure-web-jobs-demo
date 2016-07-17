@@ -4,6 +4,7 @@
 # Configuration files
 
 WebJobsDemo/ConfigFiles
+WebJobsDemo/WebApp/ConfigurationFiles
 
 # User-specific files
 *.suo

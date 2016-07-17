@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 
-namespace WebApp.Data
+namespace WebJobDemo.Core.Data
 {
     [ExcludeFromCodeCoverage]
     public class SqlConnectionFactory : IConnectionFactory

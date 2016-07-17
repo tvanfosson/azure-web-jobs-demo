@@ -2,16 +2,16 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using WebApp.Configuration;
-using WebApp.Data.Models;
+using WebJobDemo.Core.Configuration;
+using WebJobDemo.Core.Data.Models;
 
-namespace WebApp.Data
+namespace WebJobDemo.Core.Data
 {
     public class AddSubscriptionCommand : DapperBase, IAddSubscriptionCommand
     {
-        private const string InsertSql = @"INSERT (Id, FirstName, LastName, EmailAddress, SubscriptionKey) 
+        private const string InsertSql = @"INSERT INTO [dbo].[Subscriptions] (Id, FirstName, LastName, EmailAddress, SubscriptionKey) 
                                            OUTPUT inserted.Id, inserted.FirstName, inserted.LastName, inserted.EmailAddress, inserted.SubscriptionKey, inserted.CreatedOn, inserted.Version 
-                                           VALUES ({id}, {firstName}, {lastName}, {emailAddress}, {subscriptionKey})";
+                                           VALUES (@id, @firstname, @lastName, @emailAddress, @subscriptionKey)";
 
         private readonly ITransactionFactory _transactionFactory;
 
@@ -28,26 +28,27 @@ namespace WebApp.Data
                 connection.Open();
                 using (var transaction = _transactionFactory.Create(connection))
                 {
-                    var result = await connection.QueryAsync<Subscription>(InsertSql, new { id = Guid.NewGuid(), firstName, lastName, emailAddress, subscriptionKey = Guid.NewGuid() })
+                    try
+                    {
+                        var result = await connection.QueryAsync<Subscription>(InsertSql, new { id = Guid.NewGuid(), firstName, lastName, emailAddress, subscriptionKey = Guid.NewGuid() }, transaction)
                                                  .ConfigureAwait(false);
 
-                    var subscription = result.Single();
+                        var subscription = result.Single();
 
-                    if (continueWith != null)
-                    {
-                        try
+                        if (continueWith != null)
                         {
                             subscription = await continueWith(subscription);
                         }
-                        catch
-                        {
-                            transaction.Rollback();
-                            return null;
-                        }
-                    }
 
-                    transaction.Commit();
-                    return subscription;
+                        transaction.Commit();
+
+                        return subscription;
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        return null;
+                    }
                 }
             }
         }

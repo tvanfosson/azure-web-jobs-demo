@@ -1,17 +1,19 @@
 ﻿using System.Threading.Tasks;
-using WebApp.Data;
-using WebApp.Data.Models;
+using WebJobDemo.Core.Data;
+using WebJobDemo.Core.Data.Models;
 
 namespace WebApp.Services
 {
-    public class SubscriptionService
+    public class SubscriptionService : ISubscriptionService
     {
         private readonly IAddSubscriptionCommand _addSubscription;
+        private readonly IUpdateSubscriptionCommand _updateSubscription;
         private readonly IOfflineProcessingService _offlineProcessingService;
 
-        public SubscriptionService(IAddSubscriptionCommand addSubscription, IOfflineProcessingService offlineProcessingService)
+        public SubscriptionService(IAddSubscriptionCommand addSubscription, IUpdateSubscriptionCommand updateSubscription, IOfflineProcessingService offlineProcessingService)
         {
             _addSubscription = addSubscription;
+            _updateSubscription = updateSubscription;
             _offlineProcessingService = offlineProcessingService;
         }
 
@@ -22,7 +24,23 @@ namespace WebApp.Services
                 await _offlineProcessingService.NotifySubscriber(s.Id)
                                                .ConfigureAwait(false);
                 return s;
-            });
+            })
+            .ConfigureAwait(false);
+        }
+
+        public async Task Confirm(Subscription subscription)
+        {
+            if (subscription.Confirmed)
+            {
+                return;
+            }
+
+            await _updateSubscription.Update(subscription, async s =>
+            {
+                await _offlineProcessingService.ConfirmationReceived(subscription.Id)
+                                               .ConfigureAwait(false);
+            })
+            .ConfigureAwait(false);
         }
     }
 }

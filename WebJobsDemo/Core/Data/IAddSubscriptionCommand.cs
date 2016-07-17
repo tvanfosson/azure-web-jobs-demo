@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using WebApp.Data.Models;
+using WebJobDemo.Core.Data.Models;
 
-namespace WebApp.Data
+namespace WebJobDemo.Core.Data
 {
     public interface IAddSubscriptionCommand
     {

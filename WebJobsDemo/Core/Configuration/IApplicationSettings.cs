@@ -1,9 +1,9 @@
-﻿namespace WebApp.Configuration
+﻿namespace WebJobDemo.Core.Configuration
 {
     public interface IApplicationSettings
     {
         string WebJobsDemoConnectionString { get; }
         string JobMessagesConnectionString { get; }
-        string JobMessagesQueue { get; }
+        string WebJobsFromAddress { get; }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
-namespace WebApp.Data.Models
+namespace WebJobDemo.Core.Data.Models
 {
     public class Subscription
     {
@@ -25,5 +26,16 @@ namespace WebApp.Data.Models
         public bool Confirmed { get; set; }
 
         public byte[] Version { get; set; }
+
+        public string GetDomain()
+        {
+            var domain = EmailAddress?
+                            .Split('@')
+                            .Skip(1)
+                            .Select(s => s.Trim())
+                            .FirstOrDefault();
+
+            return domain;
+        }
     }
 }

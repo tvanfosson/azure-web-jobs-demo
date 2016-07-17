@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
-namespace WebApp.Data
+namespace WebJobDemo.Core.Data
 {
     [ExcludeFromCodeCoverage]
     public class TransactionFactory : ITransactionFactory

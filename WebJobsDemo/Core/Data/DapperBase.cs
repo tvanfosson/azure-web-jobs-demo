@@ -1,10 +1,12 @@
 ﻿using System.Data;
-using WebApp.Configuration;
+using WebJobDemo.Core.Configuration;
 
-namespace WebApp.Data
+namespace WebJobDemo.Core.Data
 {
     public abstract class DapperBase
     {
+        protected const string CountDomainStatsSql = "SELECT COUNT(*) as [Count] FROM DomainStatistics WHERE Domain = @domain";
+
         private readonly IConnectionFactory _connectionFactory;
         private readonly IApplicationSettings _settings;
 
@@ -18,5 +20,6 @@ namespace WebApp.Data
         {
             return _connectionFactory.Create(_settings.WebJobsDemoConnectionString);
         }
+
     }
 }
