@@ -103,6 +103,8 @@
     <Content Include="..\WebApp\ConfigurationFiles\AppSettings.config">
       <Link>ConfigurationFiles\AppSettings.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="..\WebApp\ConfigurationFiles\AppSettings.Debug.config">
       <Link>ConfigurationFiles\AppSettings.Debug.config</Link>
@@ -117,6 +119,8 @@
     <Content Include="..\WebApp\ConfigurationFiles\ConnectionStrings.config">
       <Link>ConfigurationFiles\ConnectionStrings.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="..\WebApp\ConfigurationFiles\ConnectionStrings.Debug.config">
       <Link>ConfigurationFiles\ConnectionSTrings.Debug.config</Link>
@@ -131,6 +135,8 @@
     <Content Include="..\WebApp\ConfigurationFiles\MailSettings.config">
       <Link>ConfigurationFiles\MailSettings.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="..\WebApp\ConfigurationFiles\MailSettings.Debug.config">
       <Link>ConfigurationFiles\MailSettings.Debug.config</Link>
