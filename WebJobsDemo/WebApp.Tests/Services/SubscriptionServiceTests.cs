@@ -71,7 +71,7 @@ namespace WebApp.Tests.Services
 
             await service.Confirm(_fixture.NewSubscription);
 
-            _fixture.MockOfflineProcessing.Verify(s => s.ConfirmationReceived(_fixture.NewSubscription.Id));
+            _fixture.MockOfflineProcessing.Verify(s => s.ConfirmationReceived(_fixture.NewSubscription));
         }
 
         public SubscriptionServiceTests()
@@ -140,7 +140,7 @@ namespace WebApp.Tests.Services
                 MockOfflineProcessing.Setup(m => m.NotifySubscriber(It.IsNotIn(NewSubscription.Id)))
                                      .Throws(new ServerBusyException("message"));
 
-                MockOfflineProcessing.Setup(m => m.ConfirmationReceived(It.IsNotIn(NewSubscription.Id)))
+                MockOfflineProcessing.Setup(m => m.ConfirmationReceived(It.IsNotIn(NewSubscription)))
                                      .Throws(new ServerBusyException("message"));
 
                 return new SubscriptionService(MockAddCommand.Object, MockUpdateCommand.Object, MockOfflineProcessing.Object);

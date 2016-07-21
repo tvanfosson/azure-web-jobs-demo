@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
 using WebJobDemo.Core.Configuration;
+using WebJobDemo.Core.Data.Models;
 
 namespace WebApp.Services
 {
@@ -22,9 +23,9 @@ namespace WebApp.Services
             await _queueClient.SendAsync(new BrokeredMessage(id));
         }
 
-        public async Task ConfirmationReceived(Guid id)
+        public async Task ConfirmationReceived(Subscription subscription)
         {
-            await _topicClient.SendAsync(new BrokeredMessage(id));
+            await _topicClient.SendAsync(new BrokeredMessage(subscription));
         }
     }
 }

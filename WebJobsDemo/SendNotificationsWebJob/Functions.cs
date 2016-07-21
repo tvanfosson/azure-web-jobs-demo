@@ -16,7 +16,7 @@ namespace SendNotificationsWebJob
         private readonly IConnectionFactory _connectionFactory;
 
         public Functions()
-            : this(new ApplicationSettings(), new SqlConnectionFactory())
+            : this(new ApplicationSettings(""), new SqlConnectionFactory())
         {
         }
 
@@ -73,15 +73,6 @@ namespace SendNotificationsWebJob
             {
                 await smtpClient.SendMailAsync(mailMessage);
             }
-        }
-
-        public async Task UpdateStats([ServiceBusTrigger(ApplicationSettings.ConfirmationTopic, ApplicationSettings.StatsSubscription)] BrokeredMessage message, TextWriter log)
-        {
-            var subscription = message.GetBody<Subscription>();
-
-            var update = new UpdateStatisticCommand(_settings, _connectionFactory);
-
-            await update.AddConfirmation(subscription.GetDomain());
         }
 
         private MailMessage CreateMessage(string to, string subject, string body)

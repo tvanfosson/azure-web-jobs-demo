@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
@@ -16,9 +17,9 @@ namespace WebApp
 {
     public static class DependencyConfig
     {
-        private static readonly Type _profileType = typeof (Profile);
+        private static readonly Type _profileType = typeof(Profile);
 
-        private static readonly ISet<Type> _profileTypes = typeof (MapperConfig).Assembly
+        private static readonly ISet<Type> _profileTypes = typeof(MapperConfig).Assembly
                                                                                 .GetTypes()
                                                                                 .Where(t => _profileType.IsAssignableFrom(t))
                                                                                 .ToHashSet();
@@ -27,13 +28,18 @@ namespace WebApp
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<ApplicationSettings>()
+            builder.Register(c =>
+                    {
+                        var context = c.Resolve<HttpContextBase>();
+                        var host = context.Request?.Url?.Authority;
+                        return new ApplicationSettings(host);
+                    })
                    .As<IApplicationSettings>()
-                   .SingleInstance();
+                   .InstancePerRequest();
 
             builder.RegisterType<TransactionFactory>()
                    .As<ITransactionFactory>()
-                   .SingleInstance();
+                   .InstancePerRequest();
 
             builder.RegisterType<SqlConnectionFactory>()
                    .As<IConnectionFactory>()
@@ -59,7 +65,7 @@ namespace WebApp
                    .As<ISubscriptionService>()
                    .InstancePerRequest();
 
-            builder.RegisterAssemblyTypes(typeof (MapperConfig).Assembly)
+            builder.RegisterAssemblyTypes(typeof(MapperConfig).Assembly)
                    .Where(t => _profileTypes.Contains(t))
                    .InstancePerRequest();
 

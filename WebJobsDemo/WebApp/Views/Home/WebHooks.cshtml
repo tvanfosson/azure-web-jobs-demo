@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "WebHooks";
+}
+
+@model WebHooksViewModel
+
+<div class="jumbotron">
+    <h1>WebHooks</h1>
+    <p class="lead">Subscribe/unsubscribe from WebHooks and see the current count of hooks received.</p>
+</div>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        <label class="control-label">WebHooks Received</label>
+        <span>@Model.Count</span>
+    </div>
+
+    <div class="form-group">
+        <div>
+            <button type="submit" class="btn btn-default">Refresh Count</button>
+        </div>
+    </div>
+}
+
+<form class="js-register-form" data-uri="@Model.Uri" data-key="@Model.Key">
+    <div class="form-group">
+        <div>
+            <button type="submit" class="btn btn-default">Subscribe</button>
+        </div>
+    </div>
+</form>
+
+<form class="js-deregister-form">
+    <div class="form-group">
+        <div>
+            <button type="submit" class="btn btn-default">Unsubscribe</button>
+        </div>
+    </div>
+</form>
+
+
+<div class="alert alert-warning alert-dismissable hidden js-alert">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    <span class="js-message"></span>
+</div>
+
+<script>
+    $(function () {
+        var $alert = $('.js-alert').hide()
+                                   .removeClass('hidden');
+
+        var $msg = $('js-message');
+
+        $('.js-register-form').on('submit', function (e) {
+            e.preventDefault();
+
+            $alert.hide();
+
+            var $this = $(this);
+            var uri = $this.data('uri');
+            var key = $this.data('key');
+
+            $.ajax('/api/webhooks/registrations', {
+                type: 'POST',
+                data: JSON.stringify({
+                    WebHookUri: uri,
+                    Secret: key,
+                    Description: 'WebJobs Demo WebHook'
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json'
+            })
+            .done(function (data, status) {
+                if (data.Message) {
+                    $msg.text(data.Message);
+                } else {
+                    $msg.text(status);
+                }
+                $alert.show();
+            })
+            .fail(function (err) {
+                $msg.text(err.responseJSON.Message);
+                $alert.show();
+            });
+        });
+
+        $('.js-deregister-form').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax('/api/webhooks/registrations', {
+                type: 'DELETE'
+            })
+            .done(function (data, status) {
+                if (data.Message) {
+                    $msg.text(data.Message);
+                } else {
+                    $msg.text(status);
+                }
+                $alert.show();
+            })
+            .fail(function (err) {
+                $msg.text(err.responseJSON.Message);
+                $alert.show();
+            });
+        });
+    });
+</script>

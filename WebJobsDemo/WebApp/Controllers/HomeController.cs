@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using AutoMapper;
 using WebApp.Models;
 using WebApp.Services;
+using WebApp.WebHooks;
+using WebJobDemo.Core.Configuration;
 using WebJobDemo.Core.Data;
 
 namespace WebApp.Controllers
@@ -15,12 +17,14 @@ namespace WebApp.Controllers
         private readonly ISubscriptionService _subscriptionService;
         private readonly ISubscriptionQuery _subscriptionQuery;
         private readonly IMapper _mapper;
+        private readonly IApplicationSettings _settings;
 
-        public HomeController(ISubscriptionService subscriptionService, ISubscriptionQuery subscriptionQuery, IMapper mapper)
+        public HomeController(ISubscriptionService subscriptionService, ISubscriptionQuery subscriptionQuery, IMapper mapper, IApplicationSettings settings)
         {
             _subscriptionService = subscriptionService;
             _subscriptionQuery = subscriptionQuery;
             _mapper = mapper;
+            _settings = settings;
         }
 
         public ActionResult Index()
@@ -100,11 +104,11 @@ namespace WebApp.Controllers
                 {
                     try
                     {
-                        await _subscriptionService.Confirm(subscription);
-                        subscription.Confirmed = true;
+                        subscription = await _subscriptionService.Confirm(subscription);
                     }
                     catch (Exception)
                     {
+                        subscription.Confirmed = false;
                         // TODO: log this.... :)
                     }
 
@@ -120,6 +124,19 @@ namespace WebApp.Controllers
             var stats = await _subscriptionQuery.GetStatistics();
 
             var model = _mapper.Map<ICollection<DomainStatisticsViewModel>>(stats);
+
+            return View(model);
+        }
+
+        [Authorize]
+        public ActionResult WebHooks()
+        {
+            var model = new WebHooksViewModel
+            {
+                Uri = _settings.WebHookUri,
+                Key = _settings.WebHookKey,
+                Count = WebHookCounter.Count
+            };
 
             return View(model);
         }

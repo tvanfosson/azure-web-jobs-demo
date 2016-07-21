@@ -4,7 +4,10 @@
 
 @model SubscriberViewModel
 
-<h2>@ViewBag.Title</h2>
+<div class="jumbotron">
+    <h1>Subscribe</h1>
+    <p class="lead">Subscribe and kick off the WebJob processing</p>
+</div>
 
 @using (Html.BeginForm("subscribe", "Home", FormMethod.Post, new { role = "form" }))
 {

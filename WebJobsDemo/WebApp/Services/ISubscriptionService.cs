@@ -6,6 +6,6 @@ namespace WebApp.Services
     public interface ISubscriptionService
     {
         Task<Subscription> SignUp(string firstName, string lastName, string emailAddress);
-        Task Confirm(Subscription subscription);
+        Task<Subscription> Confirm(Subscription subscription);
     }
 }

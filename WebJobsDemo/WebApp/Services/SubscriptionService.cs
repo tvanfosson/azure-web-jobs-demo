@@ -28,19 +28,23 @@ namespace WebApp.Services
             .ConfigureAwait(false);
         }
 
-        public async Task Confirm(Subscription subscription)
+        public async Task<Subscription> Confirm(Subscription subscription)
         {
             if (subscription.Confirmed)
             {
-                return;
+                return subscription;
             }
+
+            subscription.Confirmed = true;
 
             await _updateSubscription.Update(subscription, async s =>
             {
-                await _offlineProcessingService.ConfirmationReceived(subscription.Id)
+                await _offlineProcessingService.ConfirmationReceived(subscription)
                                                .ConfigureAwait(false);
             })
             .ConfigureAwait(false);
+
+            return subscription;
         }
     }
 }

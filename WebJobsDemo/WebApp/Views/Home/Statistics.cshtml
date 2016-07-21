@@ -4,24 +4,29 @@
 
 @model ICollection<DomainStatisticsViewModel>
 
-<h1>Domain Statistics</h1>
+<div class="jumbotron">
+    <h1>Domain Statistics</h1>
+</div>
 
-<table class="table table-responsive table-striped">
+<table class="table table-responsive table-striped table-bordered">
     <thead>
     <tr>
-        <td class="col-sm-4">Domain</td>
-        <td class="col-sm-2">Count</td>
-        <td class="col-sm-6">Last Updated</td>
+        <th class="col-sm-4 text-left">Domain</th>
+        <th class="col-sm-2 text-center">Count</th>
+        <th class="col-sm-2 text-center">Confirmed</th>
+        <th class="col-sm-4 text-left">Last Updated</th>
     </tr>
     </thead>
     <tbody>
     @if (Model.Any())
     {
-        foreach (var stat in Model.OrderByDescending(m => m.Count))
+        foreach (var stat in Model.OrderByDescending(s => s.Count)
+                                  .ThenByDescending(s => s.Confirmed))
         {
             <tr>
                 <td>@stat.Domain</td>
-                <td>@stat.Count</td>
+                <td class="text-center">@stat.Count</td>
+                <td class="text-center">@stat.Confirmed</td>
                 <td>@stat.LastUpdated.ToString("G")</td>
             </tr>
         }

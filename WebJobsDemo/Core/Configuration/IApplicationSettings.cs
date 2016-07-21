@@ -5,5 +5,7 @@
         string WebJobsDemoConnectionString { get; }
         string JobMessagesConnectionString { get; }
         string WebJobsFromAddress { get; }
+        string WebHookUri { get; }
+        string WebHookKey { get;  }
     }
 }

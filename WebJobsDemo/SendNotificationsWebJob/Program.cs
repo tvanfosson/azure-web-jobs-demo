@@ -8,11 +8,11 @@ namespace SendNotificationsWebJob
 {
     class Program
     {
-        private static string _servicesBusConnectionString;
+        private static string _serviceBusConnectionString;
 
         public static void Main()
         {
-            var settings = new ApplicationSettings();
+            var settings = new ApplicationSettings("");
 
             if (!VerifyConfiguration(settings))
             {
@@ -20,12 +20,12 @@ namespace SendNotificationsWebJob
                 return;
             }
 
-            _servicesBusConnectionString = settings.JobMessagesConnectionString;
+            _serviceBusConnectionString = settings.JobMessagesConnectionString;
 
             var config = new JobHostConfiguration();
             config.UseServiceBus(new ServiceBusConfiguration
                                  {
-                                     ConnectionString = _servicesBusConnectionString,
+                                     ConnectionString = _serviceBusConnectionString,
                                  });
 
             var host = new JobHost(config);

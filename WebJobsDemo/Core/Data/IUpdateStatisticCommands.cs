@@ -2,8 +2,9 @@
 
 namespace WebJobDemo.Core.Data
 {
-    public interface IUpdateStatisticCommand
+    public interface IUpdateStatisticCommands
     {
         Task AddConfirmation(string domain);
+        Task Recalculate();
     }
 }

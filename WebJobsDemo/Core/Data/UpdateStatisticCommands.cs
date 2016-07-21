@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -6,11 +7,11 @@ using WebJobDemo.Core.Configuration;
 
 namespace WebJobDemo.Core.Data
 {
-    public class UpdateStatisticCommand : DapperBase, IUpdateStatisticCommand
+    public class UpdateStatisticCommands : DapperBase, IUpdateStatisticCommands
     {
         private const string UpdateConfirmedSql = "UPDATE DomainStatistics SET [Confirmed] = [Confirmed] + 1, LastUpdated = @lastUpdated WHERE Domain = @domain";
 
-        public UpdateStatisticCommand(IApplicationSettings settings, IConnectionFactory connectionFactory)
+        public UpdateStatisticCommands(IApplicationSettings settings, IConnectionFactory connectionFactory)
             : base(settings, connectionFactory)
         {
         }
@@ -40,6 +41,14 @@ namespace WebJobDemo.Core.Data
                         transaction.Rollback();
                     }
                 }
+            }
+        }
+
+        public async Task Recalculate()
+        {
+            using (var connection = CreateConnection())
+            {
+                await connection.ExecuteAsync("RecalculateDomainStatistics", commandType: CommandType.StoredProcedure);
             }
         }
     }
