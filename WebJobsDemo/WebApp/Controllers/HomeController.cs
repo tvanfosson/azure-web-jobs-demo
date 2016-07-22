@@ -128,7 +128,6 @@ namespace WebApp.Controllers
             return View(model);
         }
 
-        [Authorize]
         public ActionResult WebHooks()
         {
             var model = new WebHooksViewModel
