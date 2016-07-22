@@ -56,7 +56,7 @@ namespace WebApp.Controllers
 
                     ModelState.AddModelError("EmailAddress", "Address already in use. Please try another.");
                 }
-                catch (Exception e)
+                catch
                 {
                     ModelState.AddModelError("", "Something bad happened. Please try again later.");
                 }

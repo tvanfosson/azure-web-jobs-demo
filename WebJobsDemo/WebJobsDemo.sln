@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendWebHooksWebJob", "SendW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.WebJobs", "Core.WebJobs\Core.WebJobs.csproj", "{C5D1B3A9-9F8E-46B3-A60B-D77AC4694840}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResendConfirmations", "ResendConfirmations\ResendConfirmations.csproj", "{08F86913-6C17-47AD-9C4E-E21CEB0C0F53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{C5D1B3A9-9F8E-46B3-A60B-D77AC4694840}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5D1B3A9-9F8E-46B3-A60B-D77AC4694840}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5D1B3A9-9F8E-46B3-A60B-D77AC4694840}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08F86913-6C17-47AD-9C4E-E21CEB0C0F53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08F86913-6C17-47AD-9C4E-E21CEB0C0F53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08F86913-6C17-47AD-9C4E-E21CEB0C0F53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08F86913-6C17-47AD-9C4E-E21CEB0C0F53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

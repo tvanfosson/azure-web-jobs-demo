@@ -12,6 +12,9 @@
     },
     {
       "filePath": "../StatisticsRecalculationWebJob/StatisticsRecalculationWebJob.csproj"
+    },
+    {
+      "filePath": "../ResendConfirmations/ResendConfirmations.csproj"
     }
   ]
 }

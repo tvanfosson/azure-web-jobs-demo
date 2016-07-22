@@ -64,6 +64,20 @@ namespace WebJobDemo.Core.Data
             }
         }
 
+        public async Task<ICollection<Subscription>> GetSubscriptionsWithMissingConfirmations()
+        {
+            var builder = new SqlBuilder().Where("ConfirmationSentOn IS NULL");
+
+            var sql = GetSql(builder);
+
+            using (var connection = CreateConnection())
+            {
+                var result = await connection.QueryAsync<Subscription>(sql);
+
+                return result.ToList();
+            }
+        }
+
         public async Task<ICollection<DomainStatistic>> GetStatistics()
         {
             using (var connection = CreateConnection())

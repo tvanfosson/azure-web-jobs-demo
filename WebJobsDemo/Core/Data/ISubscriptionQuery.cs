@@ -10,6 +10,7 @@ namespace WebJobDemo.Core.Data
         Task<ICollection<Subscription>> GetSubscriptions();
         Task<Subscription> GetSubscriptionById(Guid id);
         Task<Subscription> GetSubscriptionByEmailAddressAndSubscriptionKey(string emailAddress, Guid subscriptionKey);
+        Task<ICollection<Subscription>> GetSubscriptionsWithMissingConfirmations();
         Task<ICollection<DomainStatistic>> GetStatistics();
     }
 }

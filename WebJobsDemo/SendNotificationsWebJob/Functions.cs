@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Core.WebJobs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.ServiceBus.Messaging;
 using WebJobDemo.Core.Configuration;
@@ -14,6 +15,7 @@ namespace SendNotificationsWebJob
     {
         private readonly IApplicationSettings _settings;
         private readonly IConnectionFactory _connectionFactory;
+        private readonly MessageFactory _messageFactory;
 
         public Functions()
             : this(new ApplicationSettings(""), new SqlConnectionFactory())
@@ -24,6 +26,7 @@ namespace SendNotificationsWebJob
         {
             _settings = settings;
             _connectionFactory = connectionFactory;
+            _messageFactory = new MessageFactory(_settings);
         }
 
         public async Task SendNotification([ServiceBusTrigger(ApplicationSettings.JobMessagesQueue)] Guid id, TextWriter log)
@@ -41,7 +44,7 @@ namespace SendNotificationsWebJob
                     return;
                 }
 
-                var mailMessage = CreateConfirmationMessage(subscription);
+                var mailMessage = _messageFactory.CreateConfirmationMessage(subscription);
 
                 subscription.ConfirmationSentOn = DateTime.UtcNow;
 
@@ -71,7 +74,7 @@ namespace SendNotificationsWebJob
 
             await log.WriteLineAsync($"Sending welcome notification for {subscription.EmailAddress}");
 
-            var mailMessage = CreateWelcomeMessage(subscription);
+            var mailMessage = _messageFactory.CreateWelcomeMessage(subscription);
 
             using (var smtpClient = new SmtpClient())
             {
@@ -79,56 +82,6 @@ namespace SendNotificationsWebJob
             }
 
             await log.WriteLineAsync($"Sent welcome notification for {subscription.EmailAddress}");
-        }
-
-        private MailMessage CreateMessage(string to, string subject, string body)
-        {
-            var message = new MailMessage(_settings.WebJobsFromAddress, to)
-            {
-                IsBodyHtml = true,
-                Body = body,
-                Subject = subject
-            };
-
-            return message;
-        }
-
-        private MailMessage CreateConfirmationMessage(Subscription subscription)
-        {
-            var confirm = CreateConfirmationLink(subscription);
-
-            var body = $"<div>Hello {subscription.FirstName},<br/><br/></div><div>We're glad you signed up. Please {confirm} your subscription.</div>";
-
-            return CreateMessage(subscription.EmailAddress, "Confirm your address", body);
-        }
-
-
-        private static string CreateConfirmationLink(Subscription subscription)
-        {
-            var parameters = CreateConfirmationParameters(subscription);
-
-            var link = $"<a href=\"http://webjobsdemo.azurewebsites.net/home/confirm?{parameters}\">confirm</a>";
-
-            return link;
-        }
-
-        private static string CreateConfirmationParameters(Subscription subscription)
-        {
-            // TODO: a one-time token for the subscription confirmation rather than the email address and key
-            var emailParam = $"emailAddress={subscription.EmailAddress}";
-
-            var keyParam = $"subscriptionKey={subscription.SubscriptionKey}";
-
-            var parameters = string.Join("&", emailParam, keyParam);
-
-            return parameters;
-        }
-
-        private MailMessage CreateWelcomeMessage(Subscription subscription)
-        {
-            var body = $"<div>Hello, {subscription.FirstName},<br/></br/></div><div>Welcome to the Demo!</div>";
-
-            return CreateMessage(subscription.EmailAddress, "Welcome to the Demo!", body);
         }
     }
 }
