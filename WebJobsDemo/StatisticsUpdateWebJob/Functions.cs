@@ -30,9 +30,15 @@ namespace StatisticsUpdateWebJob
         {
             var subscription = message.GetBody<Subscription>();
 
+            var domain = subscription.GetDomain();
+
+            await log.WriteLineAsync($"Updating stats for {domain} due to entry for {subscription.EmailAddress}");
+
             var update = new UpdateStatisticCommands(_settings, _connectionFactory);
 
-            await update.AddConfirmation(subscription.GetDomain());
+            await update.AddConfirmation(domain);
+
+            await log.WriteLineAsync("Stats updated");
         }
     }
 }

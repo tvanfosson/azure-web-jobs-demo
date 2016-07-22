@@ -30,7 +30,7 @@ namespace SendNotificationsWebJob
         {
             try
             {
-                await log.WriteAsync($"Sending notifications for {id}");
+                await log.WriteLineAsync($"Sending notifications for {id}");
 
                 var query = new SubscriptionQuery(_settings, _connectionFactory);
 
@@ -55,7 +55,7 @@ namespace SendNotificationsWebJob
                     }
                 });
 
-                await log.WriteAsync($"Sent email to {subscription.EmailAddress}");
+                await log.WriteLineAsync($"Sent email to {subscription.EmailAddress}");
             }
             catch (Exception e)
             {
@@ -69,7 +69,7 @@ namespace SendNotificationsWebJob
 
             var subscription = message.GetBody<Subscription>();
 
-            await log.WriteAsync($"Sending welcome notification for {subscription.EmailAddress}");
+            await log.WriteLineAsync($"Sending welcome notification for {subscription.EmailAddress}");
 
             var mailMessage = CreateWelcomeMessage(subscription);
 
@@ -78,7 +78,7 @@ namespace SendNotificationsWebJob
                 await smtpClient.SendMailAsync(mailMessage);
             }
 
-            await log.WriteAsync($"Sent welcome notification for {subscription.EmailAddress}");
+            await log.WriteLineAsync($"Sent welcome notification for {subscription.EmailAddress}");
         }
 
         private MailMessage CreateMessage(string to, string subject, string body)

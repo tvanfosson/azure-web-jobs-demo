@@ -20,9 +20,13 @@ namespace StatisticsRecalculationWebJob
         [NoAutomaticTrigger]
         public async Task RecalculcateStatistics(TextWriter log)
         {
+            await log.WriteLineAsync("Recalculating statistics");
+
             var command = new UpdateStatisticCommands(_settings, _connectionFactory);
 
             await command.Recalculate();
+
+            await log.WriteLineAsync("Recalculation complete");
         }
     }
 }

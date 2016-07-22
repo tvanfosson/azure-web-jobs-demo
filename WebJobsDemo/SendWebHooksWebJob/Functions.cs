@@ -31,6 +31,8 @@ namespace SendWebHooksWebJob
                                     ApplicationSettings.WebHookSubscription,
                                     $"Welcome, {subscription.FirstName} {subscription.LastName}"
                                  );
+
+            await log.WriteLineAsync("Sent WebHook");
         }
     }
 }
