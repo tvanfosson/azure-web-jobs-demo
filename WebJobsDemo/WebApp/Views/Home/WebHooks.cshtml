@@ -45,64 +45,67 @@
     <span class="js-message"></span>
 </div>
 
-<script>
-    $(function () {
-        var $alert = $('.js-alert').hide()
-                                   .removeClass('hidden');
+@section scripts
+{
+    <script>
+        $(function() {
+            var $alert = $('.js-alert').hide()
+                .removeClass('hidden');
 
-        var $msg = $('js-message');
+            var $msg = $('js-message');
 
-        $('.js-register-form').on('submit', function (e) {
-            e.preventDefault();
+            $('.js-register-form').on('submit', function(e) {
+                e.preventDefault();
 
-            $alert.hide();
+                $alert.hide();
 
-            var $this = $(this);
-            var uri = $this.data('uri');
-            var key = $this.data('key');
+                var $this = $(this);
+                var uri = $this.data('uri');
+                var key = $this.data('key');
 
-            $.ajax('/api/webhooks/registrations', {
-                type: 'POST',
-                data: JSON.stringify({
-                    WebHookUri: uri,
-                    Secret: key,
-                    Description: 'WebJobs Demo WebHook'
-                }),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json'
-            })
-            .done(function (data, status) {
-                if (data.Message) {
-                    $msg.text(data.Message);
-                } else {
-                    $msg.text(status);
-                }
-                $alert.show();
-            })
-            .fail(function (err) {
-                $msg.text(err.responseJSON.Message);
-                $alert.show();
+                $.ajax('/api/webhooks/registrations', {
+                        type: 'POST',
+                        data: JSON.stringify({
+                            WebHookUri: uri,
+                            Secret: key,
+                            Description: 'WebJobs Demo WebHook'
+                        }),
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json'
+                    })
+                    .done(function(data, status) {
+                        if (data.Message) {
+                            $msg.text(data.Message);
+                        } else {
+                            $msg.text(status);
+                        }
+                        $alert.show();
+                    })
+                    .fail(function(err) {
+                        $msg.text(err.responseJSON.Message);
+                        $alert.show();
+                    });
+            });
+
+            $('.js-deregister-form').on('submit', function(e) {
+                e.preventDefault();
+
+                $.ajax('/api/webhooks/registrations', {
+                        type: 'DELETE'
+                    })
+                    .done(function(data, status) {
+                        if (data.Message) {
+                            $msg.text(data.Message);
+                        } else {
+                            $msg.text(status);
+                        }
+                        $alert.show();
+                    })
+                    .fail(function(err) {
+                        $msg.text(err.responseJSON.Message);
+                        $alert.show();
+                    });
             });
         });
-
-        $('.js-deregister-form').on('submit', function (e) {
-            e.preventDefault();
-
-            $.ajax('/api/webhooks/registrations', {
-                type: 'DELETE'
-            })
-            .done(function (data, status) {
-                if (data.Message) {
-                    $msg.text(data.Message);
-                } else {
-                    $msg.text(status);
-                }
-                $alert.show();
-            })
-            .fail(function (err) {
-                $msg.text(err.responseJSON.Message);
-                $alert.show();
-            });
-        });
-    });
-</script>
+    </script>
+}
