@@ -31,7 +31,7 @@ namespace WebApp
             builder.Register(c =>
                     {
                         var context = c.Resolve<HttpContextBase>();
-                        var host = context.Request?.Url?.Authority;
+                        var host = context.Request?.Url?.GetLeftPart(UriPartial.Authority);
                         return new ApplicationSettings(host);
                     })
                    .As<IApplicationSettings>()
