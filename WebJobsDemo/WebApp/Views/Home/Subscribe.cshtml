@@ -11,6 +11,8 @@
 
 @using (Html.BeginForm("subscribe", "Home", FormMethod.Post, new { role = "form" }))
 {
+    @Html.ValidationSummary(true)
+
     <div class="form-group">
         @Html.LabelFor(m => m.FirstName, new { @class = "control-label" })
         <div>

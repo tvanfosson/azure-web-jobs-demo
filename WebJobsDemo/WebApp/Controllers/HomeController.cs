@@ -47,20 +47,18 @@ namespace WebApp.Controllers
                 {
                     var subscription = await _subscriptionService.SignUp(subscriber.FirstName, subscriber.LastName, subscriber.EmailAddress);
 
-                    var model = _mapper.Map<SubscriptionViewModel>(subscription);
+                    if (subscription != null)
+                    {
+                        var model = _mapper.Map<SubscriptionViewModel>(subscription);
 
-                    return View("Subscribed", model);
+                        return View("Subscribed", model);
+                    }
+
+                    ModelState.AddModelError("EmailAddress", "Address already in use. Please try another.");
                 }
                 catch (Exception e)
                 {
-                    if (e.Message.StartsWith("Cannot insert duplicate", StringComparison.OrdinalIgnoreCase))
-                    {
-                        ModelState.AddModelError("EmailAddress", "Address already in use. Please try another.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Something bad happened. Please try again later.");
-                    }
+                    ModelState.AddModelError("", "Something bad happened. Please try again later.");
                 }
             }
 
