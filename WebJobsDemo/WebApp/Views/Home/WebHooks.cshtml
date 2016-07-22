@@ -40,19 +40,30 @@
 </form>
 
 
-<div class="alert alert-warning alert-dismissable hidden js-alert">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-    <span class="js-message"></span>
+<!-- Modal -->
+<div class="modal fade js-modal" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalTitle">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title js-modal-title" id="messageModalTitle"></h4>
+            </div>
+            <div class="modal-body js-modal-message">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section scripts
 {
     <script>
         $(function() {
-            var $alert = $('.js-alert').hide()
-                .removeClass('hidden');
-
-            var $msg = $('.js-message');
+            var $alert = $('.js-modal').modal({show: false});
+            var $title = $('.js-modal-title');
+            var $msg = $('.js-modal-message');
 
             $('.js-register-form').on('submit', function(e) {
                 e.preventDefault();
@@ -75,15 +86,13 @@
                     })
                     .done(function(data, status) {
                         if (data.Message) {
-                            $msg.text(data.Message);
+                           showMessage('Success', data.Message);
                         } else {
-                            $msg.text(status);
+                            showMessage('Error', status);
                         }
-                        $alert.show();
                     })
                     .fail(function(err) {
-                        $msg.text(err.responseJSON.Message);
-                        $alert.show();
+                        showMessage('Error', err.responseJSON.Message);
                     });
             });
 
@@ -95,17 +104,21 @@
                     })
                     .done(function(data, status) {
                         if (data.Message) {
-                            $msg.text(data.Message);
+                            showMessage('Success', data.Message);
                         } else {
-                            $msg.text(status);
+                            showMessage('Error', status);
                         }
-                        $alert.show();
                     })
                     .fail(function(err) {
-                        $msg.text(err.responseJSON.Message);
-                        $alert.show();
+                        showMessage('Error', err.responseJSON.Message);
                     });
             });
+
+            function showMessage(title, msg) {
+                $title.text(title);
+                $msg.text(msg);
+                $alert.modal('show');
+            }
         });
     </script>
 }
