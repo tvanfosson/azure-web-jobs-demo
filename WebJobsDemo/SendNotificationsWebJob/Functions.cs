@@ -55,6 +55,7 @@ namespace SendNotificationsWebJob
                     }
                 });
 
+                await log.WriteAsync($"Sent email to {subscription.EmailAddress}");
             }
             catch (Exception e)
             {
@@ -65,7 +66,10 @@ namespace SendNotificationsWebJob
 
         public async Task SendWelcome([ServiceBusTrigger(ApplicationSettings.ConfirmationTopic, ApplicationSettings.WelcomeSubscription)] BrokeredMessage message, TextWriter log)
         {
+
             var subscription = message.GetBody<Subscription>();
+
+            await log.WriteAsync($"Sending welcome notification for {subscription.EmailAddress}");
 
             var mailMessage = CreateWelcomeMessage(subscription);
 
@@ -73,6 +77,8 @@ namespace SendNotificationsWebJob
             {
                 await smtpClient.SendMailAsync(mailMessage);
             }
+
+            await log.WriteAsync($"Sent welcome notification for {subscription.EmailAddress}");
         }
 
         private MailMessage CreateMessage(string to, string subject, string body)
