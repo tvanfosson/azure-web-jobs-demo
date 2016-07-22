@@ -85,10 +85,10 @@
                         dataType: 'json'
                     })
                     .done(function(data, status) {
-                        if (data.Message) {
-                           showMessage('Success', data.Message);
+                        if (status) {
+                            showMessage('Success', 'Your WebHook was successfully registered!');
                         } else {
-                            showMessage('Error', status);
+                            showMessage('Error', data && data.Message ? data.Message : 'Unknown error');
                         }
                     })
                     .fail(function(err) {
@@ -103,10 +103,10 @@
                         type: 'DELETE'
                     })
                     .done(function(data, status) {
-                        if (data.Message) {
-                            showMessage('Success', data.Message);
+                        if (status) {
+                            showMessage('Success', 'Your WebHook was successfully registered!');
                         } else {
-                            showMessage('Error', status);
+                            showMessage('Error', data && data.Message ? data.Message : 'Unknown error');
                         }
                     })
                     .fail(function(err) {
