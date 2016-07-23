@@ -20,7 +20,7 @@
         <li class="list-group-item">Confirmed: @(Model.Confirmed ? "Yes" : "No")</li>
     </ul>
 
-    using (Html.BeginForm())
+    using (Html.BeginForm("Subscribed", "Home"))
     {
         @Html.HiddenFor(m => m.EmailAddress)
         @Html.HiddenFor(m => m.SubscriptionKey)
@@ -40,7 +40,7 @@
     <p>No subscription found!</p>
 }
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Subscribed", "Home"))
 {
     <div class="form-group">
         @Html.LabelFor(m => m.EmailAddress, new { @class = "control-label" })
