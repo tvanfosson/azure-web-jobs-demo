@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>WebJobs Demo</h1>
+    <p class="lead">Some demonstrations of what can be done with Azure WebJobs</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Service Bus Queue/Topic</h2>
+        <p>
+            WebJobs can receive service bus messages from queues or topics. Multiple functions can be connected to
+            a topic allowing for small, targeted operations per message.
+        </p>
+        <p>@Html.ActionLink("Subscribe", "Subscribe")</p>
+        <p>@Html.ActionLink("Statistics", "Statistics")</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Scheduled Tasks</h2>
+        <p>WebJobs has a built-in cron-like scheduler that let's you set up scheduled tasks for housekeeping tasks.</p>
+        <p>You can also deploy a triggered job without a schedule and run it manually from the <a target="_blank" href="https://portal.azure.com">Azure Portal.</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hooks</h2>
+        <p>WebJobs can also both receive and send webhooks.</p>
+        <p>@Html.ActionLink("WebHooks", "WebHooks")</p>
+    </div>
+</div>
