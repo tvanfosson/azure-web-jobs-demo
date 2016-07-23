@@ -50,8 +50,12 @@ namespace SendNotificationsWebJob
 
                 var update = new UpdateSubscriptionCommand(_settings, _connectionFactory);
 
-                await update.Update(subscription, async s =>
-                {             
+                await update.Update(subscription, async (s,c,t) =>
+                {    
+                    var updateStats = new UpdateStatisticCommands(_settings, _connectionFactory);
+
+                    await updateStats.AddOrUpdateDomainCount(subscription.GetDomain(), c, t);
+                           
                     using (var smtpClient = new SmtpClient())
                     {
                         await smtpClient.SendMailAsync(mailMessage);

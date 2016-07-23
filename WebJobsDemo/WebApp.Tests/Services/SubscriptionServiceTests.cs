@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
@@ -61,7 +62,7 @@ namespace WebApp.Tests.Services
 
             await service.Confirm(_fixture.NewSubscription);
 
-            _fixture.MockUpdateCommand.Verify(c => c.Update(_fixture.NewSubscription, It.IsAny<Func<Subscription, Task>>()));
+            _fixture.MockUpdateCommand.Verify(c => c.Update(_fixture.NewSubscription, It.IsAny<Func<Subscription, IDbConnection, IDbTransaction, Task>>()));
         }
 
         [Fact]
@@ -104,7 +105,7 @@ namespace WebApp.Tests.Services
             };
 
             public readonly Mock<IAddSubscriptionCommand> MockAddCommand = new Mock<IAddSubscriptionCommand>();
-            public readonly Mock<IUpdateSubscriptionCommand> MockUpdateCommand = new Mock<IUpdateSubscriptionCommand>(); 
+            public readonly Mock<IUpdateSubscriptionCommand> MockUpdateCommand = new Mock<IUpdateSubscriptionCommand>();
             public readonly Mock<IOfflineProcessingService> MockOfflineProcessing = new Mock<IOfflineProcessingService>();
 
             private const string _firstName = "first";
@@ -130,11 +131,11 @@ namespace WebApp.Tests.Services
                                                 FailedSubscription.LastName,
                                                 FailedSubscription.EmailAddress,
                                                 It.IsAny<Func<Subscription, Task<Subscription>>>()))
-                              .Callback<string, string, string, Func<Subscription, Task<Subscription>>>(async (f, l, e, func) => await Assert.ThrowsAsync<MessagingException>(async ()  => await func(FailedSubscription)))
+                              .Callback<string, string, string, Func<Subscription, Task<Subscription>>>(async (f, l, e, func) => await Assert.ThrowsAsync<MessagingException>(async () => await func(FailedSubscription)))
                               .ReturnsAsync(null);
 
-                MockUpdateCommand.Setup(m => m.Update(It.Is<Subscription>(s => s.EmailAddress == NewSubscription.EmailAddress), It.IsAny<Func<Subscription, Task>>()))
-                                 .Callback<Subscription,Func<Subscription,Task>>(async (s,t) => await t(s))
+                MockUpdateCommand.Setup(m => m.Update(It.Is<Subscription>(s => s.EmailAddress == NewSubscription.EmailAddress), It.IsAny<Func<Subscription, IDbConnection, IDbTransaction, Task>>()))
+                                 .Callback<Subscription, Func<Subscription, Task>>(async (s, t) => await t(s))
                                  .Returns(Task.CompletedTask);
 
                 MockOfflineProcessing.Setup(m => m.NotifySubscriber(It.IsNotIn(NewSubscription.Id)))

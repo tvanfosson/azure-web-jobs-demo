@@ -35,11 +35,15 @@ namespace ResendConfirmations
 
                 subscription.ConfirmationSentOn = DateTime.UtcNow;
 
-                await updater.Update(subscription, async s =>
+                await updater.Update(subscription, async (s, c, t) =>
                 {
                     using (var smtpClient = new SmtpClient())
                     {
-                        await smtpClient.SendMailAsync(messageFactory.CreateConfirmationMessage(subscription));
+                        var updateStats = new UpdateStatisticCommands(settings, connectionFactory);
+
+                        await updateStats.AddOrUpdateDomainCount(subscription.GetDomain(), c, t);
+
+                        await smtpClient.SendMailAsync(messageFactory.CreateConfirmationMessage(s));
                     }
                 });
             }

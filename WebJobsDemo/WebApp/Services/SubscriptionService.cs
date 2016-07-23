@@ -37,7 +37,7 @@ namespace WebApp.Services
 
             subscription.Confirmed = true;
 
-            await _updateSubscription.Update(subscription, async s =>
+            await _updateSubscription.Update(subscription, async (s, c, t) =>
             {
                 await _offlineProcessingService.ConfirmationReceived(subscription)
                                                .ConfigureAwait(false);
