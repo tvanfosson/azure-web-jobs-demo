@@ -132,7 +132,7 @@ namespace WebApp.Tests.Services
                                                 FailedSubscription.EmailAddress,
                                                 It.IsAny<Func<Subscription, Task<Subscription>>>()))
                               .Callback<string, string, string, Func<Subscription, Task<Subscription>>>(async (f, l, e, func) => await Assert.ThrowsAsync<MessagingException>(async () => await func(FailedSubscription)))
-                              .ReturnsAsync(null);
+                              .ReturnsAsync((Subscription)null);
 
                 MockUpdateCommand.Setup(m => m.Update(It.Is<Subscription>(s => s.EmailAddress == NewSubscription.EmailAddress), It.IsAny<Func<Subscription, IDbConnection, IDbTransaction, Task>>()))
                                  .Callback<Subscription, Func<Subscription, Task>>(async (s, t) => await t(s))

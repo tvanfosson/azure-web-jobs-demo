@@ -6,7 +6,7 @@ namespace WebApp.Mapping
 {
     public class SubscriptionMappingProfile : Profile
     {
-        protected override void Configure()
+        protected SubscriptionMappingProfile()
         {
             CreateMap<Subscription, SubscriptionViewModel>()
                 .ForMember(d => d.PerformedLookup, m => m.Ignore());
