@@ -1,7 +1,7 @@
 # azure-web-jobs-demo
 Demo code for presentation on Azure WebJobs
 
-**It will be difficult to build this project with reading all of this.**
+**It will be difficult to build this project without reading all of this.**
 
 I've attempted to set up some realistic, though 
 simplistic, demonstrations of using WebJobs. The code is
